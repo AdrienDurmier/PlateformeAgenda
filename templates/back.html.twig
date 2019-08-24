@@ -59,22 +59,6 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    {# Moteur de recherche - MD #}
-                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="autocomplete_area">
-                            <input type="hidden" id="cards_search_choice" name="cards_search_choice">
-                            <div class="input-group">
-                                <input id="card_search" name="card_search" class="form-control form-control-sm" placeholder="Rechercher..." type="search" autocomplete="off">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                </div>
-                            </div>
-                            <div id="card_search_results" class="autocomplete_search_results" style="display:none;">
-                                <div id="card_search_cards"></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <ul class="navbar-nav ml-auto">
                         {# Glossaire #}
                         <li class="nav-item dropdown no-arrow mx-1">
@@ -156,73 +140,6 @@
         <script src="{{ asset('assets/plateforme/js/sb-admin-2.js') }}"></script>
         <script src="{{ asset('assets/select2/js/select2.js') }}"></script>
         <script src="{{ asset('bundles/fosckeditor/ckeditor.js') }}"></script>
-        <script>
-            // Lance la recherche si l'utilisateur n'a pas saisie depuis 500ms
-            $('#card_search').keyup(function () {
-                clearTimeout($.data(this, 'timer'));
-                let wait = setTimeout(searchCards, 500);
-                $(this).data('timer', wait);
-            });
-
-            // Recherche de carte
-            function searchCards() {
-                var nb_caractere_debut_recherche = 3;
-                if ($('#card_search').val().length >= nb_caractere_debut_recherche) {
-                    let parametres = {
-                        term: $('#card_search').val().replace(' ', '+'), // Terme à rechercher
-                    };
-                    $.ajax({
-                        url: "{{ path('planeswalkers.card.search') }}",
-                        type: 'get',
-                        dataType: 'json',
-                        beforeSend: function () {
-                            $('#loader-area').fadeIn();
-                        },
-                        success: function (data) {
-                            $('#card_search_results').show();
-                            let results_html = '';
-                            $.each(data.cards.data, function (index, element) {
-                                results_html = results_html + '<div class="autocomplete_result">';
-                                results_html = results_html + '<a class="autocomplete_choice autocomplete_card_choice"';
-                                results_html = results_html + ' data-card-id="' + element.id + '"';
-                                results_html = results_html + ' data-card-name="' + element.name + '"';
-                                results_html = results_html + '>';
-                                results_html = results_html + element.name;
-                                results_html = results_html + '</a>';
-                                results_html = results_html + '</div>';
-                            });
-                            results_html = results_html + '</div>';
-                            $('#card_search_cards').html(results_html);
-                        },
-                        complete: function () {
-                            $('#loader-area').fadeOut();
-                        },
-                        data: parametres
-                    });
-                }
-            }
-
-            // Action lors du choix d'une carte
-            $(document).on('click', '.autocomplete_card_choice', function (event) {
-                let card_id = $(this).data('card-id');
-                let card_name = $(this).data('card-name');
-                $('#cards_search_choice').val(card_id);
-                $('#card_search').val(card_name);
-                $('#card_search_results').hide();
-                let url = '{{ path("planeswalkers.card.show", {'id': 'card_id'}) }}';
-                url = url.replace("card_id", card_id);
-                window.location.href = url;
-            });
-
-            // Ferme les résultats d'autocomplétion lors d'un clic à l'extérieur de cet élement
-            $(document.body).click(function (e) {
-                let div_cliquable = $('.autocomplete_area');
-                if (!$(e.target).is(div_cliquable) && !$.contains(div_cliquable[0], e.target)) {
-                    $('#card_search_results').hide();
-                }
-            });
-
-        </script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

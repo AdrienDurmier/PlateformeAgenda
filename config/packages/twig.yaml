@@ -10,4 +10,3 @@ twig:
     # Variables utilisables dans les vues twig
     globals:
         url_api_users: '%url_api_users%'
-        url_api_scryfall: '%url_api_scryfall%'

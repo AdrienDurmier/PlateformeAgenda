@@ -6,11 +6,8 @@
 parameters:
     locale: 'fr'
     url_api_users: '%env(string:url_api_users)%'
-    url_api_scryfall: '%env(string:url_api_scryfall)%'
     path_uploads: '%kernel.project_dir%/public/uploads'
     path_uploads_message_bug: '%kernel.project_dir%/public/uploads/message/bug'
-    path_uploads_eligibilite_demande: '%kernel.project_dir%/public/uploads/eligibilite/demande'
-    path_uploads_deviseur_derogation: '%kernel.project_dir%/public/uploads/deviseur/derogation'
 
 services:
     # default configuration for services in *this* file
