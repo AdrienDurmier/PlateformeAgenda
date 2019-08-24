@@ -1,0 +1,162 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Glossaire" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-info-circle fa-fw text-gray-400"></i> Glossaire</h1>
+    </div>
+
+    <hr>
+
+    {# Ajout #}
+    {% if is_granted('ROLE_IPTIS_ADMIN') %}
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form action="#" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="input-group input-group-sm my-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Terme ou sigle</span>
+                                </div>
+                                <input id="title" name="title" type="text" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="input-group input-group-sm my-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Définition</span>
+                                </div>
+                                <input id="content" name="content" type="text" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="input-group my-1">
+                                <button class="btn btn-sm btn-success" type="submit">
+                                    <i class="fas fa-plus"></i>&nbsp;Ajouter cette définition au glossaire
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Tableau #}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Terme ou sigle</th>
+                        <th>Définitions</th>
+                        {% if is_granted('ROLE_IPTIS_ADMIN') %}
+                            <th>Action</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for glossaire in glossaires %}
+                        <tr>
+                            <td>{{ glossaire.title }}</td>
+                            <td>{{ glossaire.content }}</td>
+                            {% if is_granted('ROLE_IPTIS_ADMIN') %}
+                                <td>
+                                    <a style="cursor:pointer;" class="glossaire-edit btn btn-sm btn-dark" title="Éditer le tutoriel"
+                                       data-toggle="modal"
+                                       data-glossaire="{{ glossaire.id }}"
+                                       data-title="{{ glossaire.title }}"
+                                       data-content="{{ glossaire.content }}"
+                                       data-target="#editModal"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <a style="cursor:pointer;" data-glossaire="{{ glossaire.id }}" class="glossaire-delete btn btn-sm btn-dark text-danger" title="Supprimer cette ligne">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Fenêtre modale pour éditer une ligne du tableau #}
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <form action="{{ path('aide.glossaire.edit') }}" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <div class="h5 modal-title" id="editModalLabel">Éditer cette ligne</div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="modal_id" name="modal_id" type="hidden" required>
+                        <div class="form-group">
+                            <label for="modal_title">Terme ou sigle</label>
+                            <input id="modal_title" name="modal_title" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_content">Définition</label>
+                            <input id="modal_content" name="modal_content" type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="far fa-save"></i>&nbsp;Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Édition d'une ligne en live
+        $(".glossaire-edit").on("click", function(){
+            let glossaire = $(this).data('glossaire');
+            let glossaire_title = $(this).data('title');
+            let glossaire_content = $(this).data('content');
+            $('#modal_id').val(glossaire);
+            $('#modal_title').val(glossaire_title);
+            $('#modal_content').val(glossaire_content);
+        });
+
+        // Suppression de ligne en live
+        $(".glossaire-delete").on("click", function(){
+            var retour = confirm("Êtes-vous sûre ?");
+            if (retour == true) {
+                let glossaire = $(this).data('glossaire');
+                let current_row = $(this).closest('tr');
+                $.ajax({
+                    url:"{{ path('aide.glossaire.delete') }}",
+                    type:'post',
+                    data:{
+                        glossaire:glossaire
+                    },
+                    beforeSend: function () {
+                        $('#saving-area').fadeIn();
+                    },
+                    success: function (data) {
+                        current_row.remove()
+                    },
+                    complete: function () {
+                        $('#saving-area').fadeOut();
+                    },
+                })
+            }
+        });
+    </script>
+{% endblock %}

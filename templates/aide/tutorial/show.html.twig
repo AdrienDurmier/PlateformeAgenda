@@ -1,0 +1,31 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}{{ entity.title }}{% endblock %}
+
+{% block body %}
+    <div class="d-sm-flex align-items-center justify-content-between mb-2">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-question-circle fa-fw text-gray-400"></i> {{ entity.title }}</h1>
+        <a href="{{ path('aide.tutorial.edit', {id: entity.id}) }}" class="d-sm-inline-block btn btn-sm btn-warning shadow-sm">
+            <i class="fas fa-pen fa-sm text-white-50"></i> Modifier ce tutoriel
+        </a>
+    </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Gestion des tutoriaux</li>
+        </ol>
+    </nav>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    {{ entity.content|raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

@@ -1,0 +1,29 @@
+php bin/console #aide
+php bin/console server:run #démarrer le serveur de dev
+# https://symfony.com/doc/current/doctrine.html
+# BDD
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force
+php bin/console make:entity [Préciser une entité pour la modifier sinon création]
+php bin/console make:migration # Génère fichier de migration
+php bin/console migrate # MAJ BDD
+php bin/console make:entity --regenerate App\Entity\Eligibilite -> générer les getters et les setters
+php bin/console make:controller PageController -> Générer un controller
+php bin/console doctrine:query:sql 'SELECT * FROM page' -> Requête dans la console
+
+# FIXTURES
+php bin/console make:fixtures # composer require orm-fixtures --dev # Créer une fixture
+php bin/console doctrine:fixtures:load
+
+# FORM
+php bin/console make:form
+php bin/console make:crud
+
+# TEST
+php bin/phpunit
+
+# SECURITY
+php bin/console make:auth
+
+php bin/console config:dump-reference [nom du composant, ex:security] # configuration de la sécurité : https://www.youtube.com/watch?v=5LfSTeyvyuM&index=6&list=PLjwdMgw5TTLX7wmorGgfrqI9TcA8nMb29
+

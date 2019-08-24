@@ -1,0 +1,68 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Gestion des tutoriaux" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-question-circle fa-fw text-gray-400"></i> Gestion des tutoriaux</h1>
+        <div class="d-sm-inline-block">
+            <a href="{{ path('aide.tutorial.new') }}" class="d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Rédiger un tutoriel
+            </a>
+            <a href="{{ url_api_users }}doc" class="d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                <i class="fas fa-info fa-sm text-white-50"></i> API
+            </a>
+        </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Gestion des tutoriaux</li>
+        </ol>
+    </nav>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Rédigé le</th>
+                        <th>Modifié le</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for tutorial in tutorials %}
+                        <tr>
+                            <td>{{ tutorial.title }}</td>
+                            <td>{{ tutorial.created|date("d/m/Y \à h:i:s") }}</td>
+                            <td>{{ tutorial.updated|date("d/m/Y \à h:i:s") }}</td>
+                            <td>
+                                <a href="{{ path('aide.tutorial.show', {id : tutorial.id}) }}" class="btn btn-sm btn-dark" title="Voir le tutoriel">
+                                    {{ (tutorial.public) ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>' }}
+                                </a>
+                                
+                                <a href="{{ path('aide.tutorial.edit', {id : tutorial.id}) }}" class="btn btn-sm btn-dark" title="Éditer le tutoriel">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+
+                                <form method="post" action="{{ path('aide.tutorial.delete', {id: tutorial.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr ?')">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_tutorial') }}">
+                                    <button class="btn btn-sm btn-dark text-danger" title="Supprimer ce tutoriel"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

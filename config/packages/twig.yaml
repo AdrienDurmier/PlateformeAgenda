@@ -1,0 +1,13 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+    form_themes:
+        - 'bootstrap_4_layout.html.twig'
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+    # Variables utilisables dans les vues twig
+    globals:
+        url_api_users: '%url_api_users%'
+        url_api_scryfall: '%url_api_scryfall%'

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %} | Agenda</title>
+        {# Favicon #}
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#be0100">
+        <meta name="msapplication-TileColor" content="#be0100">
+        <meta name="theme-color" content="#ffffff">
+        {# Assets #}
+        <link rel="stylesheet" href="{{ asset('assets/fontawesome/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/plateforme/css/sb-admin-2.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/plateforme/css/back.css') }}">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body id="page-top">
+
+        <div id="wrapper">
+
+            <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('back.index') }}">
+                    <div class="sidebar-brand-icon rotate-n-45">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">Agenda</div>
+                </a>
+
+                <hr class="sidebar-divider my-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('back.index') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i><span>Tableau de bord</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+
+            </ul>
+
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <div id="content">
+
+                    <nav class="navbar navbar-expand navbar-dark bg-black topbar mb-4 static-top shadow">
+
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    {# Moteur de recherche - MD #}
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="autocomplete_area">
+                            <input type="hidden" id="cards_search_choice" name="cards_search_choice">
+                            <div class="input-group">
+                                <input id="card_search" name="card_search" class="form-control form-control-sm" placeholder="Rechercher..." type="search" autocomplete="off">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                            </div>
+                            <div id="card_search_results" class="autocomplete_search_results" style="display:none;">
+                                <div id="card_search_cards"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="navbar-nav ml-auto">
+                        {# Glossaire #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('aide.glossaire.index') }}" title="Glossaire">
+                                <i class="fas fa-info-circle fa-fw"></i>
+                            </a>
+                        </li>
+                        {# Tutoriaux #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('aide.tutorial.index') }}" title="Aide en ligne">
+                                <i class="fas fa-question-circle fa-fw"></i>
+                            </a>
+                        </li>
+                        {# Signaler un bug #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('bug.index') }}" title="Signaler un bug">
+                                <i class="fas fa-bug fa-fw"></i>
+                            </a>
+                        </li>
+                        <div class="topbar-divider d-none d-sm-block"></div>
+                        {# Utilisateur #}
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.firstname }} {{ app.user.lastname }}</span>
+                                <i class="fas fa-user-circle fa-2x"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{{ path('user.profil') }}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Mon profil
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('logout') }}" title="Se déconnecter">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Se déconnecter
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+                    </nav>
+
+                    <div class="container-fluid">
+                        {# Alertes #}
+                        {% import 'alertes.html.twig' as utils %}
+                        {% for message in app.flashes('success') %}
+                            {{ utils.alert(message, 'success', 'check') }}
+                        {%  endfor %}
+                        {% for message in app.flashes('info') %}
+                            {{ utils.alert(message, 'info', 'info-circle') }}
+                        {%  endfor %}
+                        {% for message in app.flashes('warning') %}
+                            {{ utils.alert(message, 'warning', 'exclamation-triangle') }}
+                        {%  endfor %}
+                        {% for message in app.flashes('danger') %}
+                            {{ utils.alert(message, 'danger', 'times') }}
+                        {%  endfor %}
+
+                        {# Contenu de la page #}
+                        {% block body %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <div id="loader-area" class="small" style="display:none;">
+            <i class="fas fa-spinner fa-pulse"></i> Chargement en cours...
+        </div>
+        <div id="saving-area" class="small" style="display:none;">
+            <i class="fas fa-save"></i> Enregistrement en cours...
+        </div>
+
+        <noscript>Your browser does not support JavaScript!</noscript>
+        <script src="{{ asset('assets/jquery/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ asset('assets/popper/popper.min.js') }}"></script>
+        <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/plateforme/js/sb-admin-2.js') }}"></script>
+        <script src="{{ asset('assets/select2/js/select2.js') }}"></script>
+        <script src="{{ asset('bundles/fosckeditor/ckeditor.js') }}"></script>
+        <script>
+            // Lance la recherche si l'utilisateur n'a pas saisie depuis 500ms
+            $('#card_search').keyup(function () {
+                clearTimeout($.data(this, 'timer'));
+                let wait = setTimeout(searchCards, 500);
+                $(this).data('timer', wait);
+            });
+
+            // Recherche de carte
+            function searchCards() {
+                var nb_caractere_debut_recherche = 3;
+                if ($('#card_search').val().length >= nb_caractere_debut_recherche) {
+                    let parametres = {
+                        term: $('#card_search').val().replace(' ', '+'), // Terme à rechercher
+                    };
+                    $.ajax({
+                        url: "{{ path('planeswalkers.card.search') }}",
+                        type: 'get',
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('#loader-area').fadeIn();
+                        },
+                        success: function (data) {
+                            $('#card_search_results').show();
+                            let results_html = '';
+                            $.each(data.cards.data, function (index, element) {
+                                results_html = results_html + '<div class="autocomplete_result">';
+                                results_html = results_html + '<a class="autocomplete_choice autocomplete_card_choice"';
+                                results_html = results_html + ' data-card-id="' + element.id + '"';
+                                results_html = results_html + ' data-card-name="' + element.name + '"';
+                                results_html = results_html + '>';
+                                results_html = results_html + element.name;
+                                results_html = results_html + '</a>';
+                                results_html = results_html + '</div>';
+                            });
+                            results_html = results_html + '</div>';
+                            $('#card_search_cards').html(results_html);
+                        },
+                        complete: function () {
+                            $('#loader-area').fadeOut();
+                        },
+                        data: parametres
+                    });
+                }
+            }
+
+            // Action lors du choix d'une carte
+            $(document).on('click', '.autocomplete_card_choice', function (event) {
+                let card_id = $(this).data('card-id');
+                let card_name = $(this).data('card-name');
+                $('#cards_search_choice').val(card_id);
+                $('#card_search').val(card_name);
+                $('#card_search_results').hide();
+                let url = '{{ path("planeswalkers.card.show", {'id': 'card_id'}) }}';
+                url = url.replace("card_id", card_id);
+                window.location.href = url;
+            });
+
+            // Ferme les résultats d'autocomplétion lors d'un clic à l'extérieur de cet élement
+            $(document.body).click(function (e) {
+                let div_cliquable = $('.autocomplete_area');
+                if (!$(e.target).is(div_cliquable) && !$.contains(div_cliquable[0], e.target)) {
+                    $('#card_search_results').hide();
+                }
+            });
+
+        </script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

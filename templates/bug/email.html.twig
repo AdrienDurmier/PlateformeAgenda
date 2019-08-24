@@ -1,0 +1,25 @@
+{% extends 'email.html.twig' %}
+
+{% block body %}
+
+    <p>Bonjour,</p>
+
+    <p>Un bug a été signalé par: {{ message.user.firstname }} {{ message.user.lastname|upper }}:</p>
+
+    <p>
+        <b>Commentaire laissé:</b>
+        {{ message.content|raw }}
+    </p>
+
+    {% if message.filename %}
+        <p>
+            <b>Pièce jointe : </b>
+            <a href="{{ absolute_url(asset('uploads/message/bug/' ~ message.filename)) }}" target="_blank">
+                <i class="fas fa-paperclip"></i> lien
+            </a>
+        </p>
+    {% else %}
+        Aucune pièce jointe
+    {% endif %}
+
+{% endblock %}

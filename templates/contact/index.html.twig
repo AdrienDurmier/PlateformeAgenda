@@ -1,0 +1,36 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Formulaire de contact" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200">Formulaire de contact</h1>
+    </div>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div id="contactForm" class="mt-4">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col">{{ form_row(form.firstname) }}</div>
+                    <div class="col">{{ form_row(form.lastname) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col">{{ form_row(form.phone) }}</div>
+                    <div class="col">{{ form_row(form.email) }}</div>
+                </div>
+                {{ form_rest(form) }}
+                <div class="form-group">
+                    <button class="btn btn-success btn-sm">
+                        <i class="fas fa-paper-plane"></i> Envoyer
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

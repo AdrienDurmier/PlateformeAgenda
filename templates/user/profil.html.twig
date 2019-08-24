@@ -1,0 +1,37 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Mon profil" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200">Mon profil</h1>
+    </div>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <div class="h6 m-0 font-weight-bold text-light">Informations</div>
+        </div>
+        <div class="card-body">
+            <dl>
+                <dt>Username</dt> <dd>{{ user.username }}</dd>
+                <dt>Email</dt> <dd>{{ user.email }}</dd>
+                <dt>Compte actif</dt> <dd>{{ user.enabled|display_boolean }}</dd>
+                <dt>Dernière connexion</dt> <dd>{{ user.lastLogin|date('d/m/Y \à H:i:s') }}</dd>
+                <dt>Droits d'accès</dt> 
+                <dd>
+                    <ul>
+                    {% for role in user.roles %}
+                        <li>{{ role }}</li>
+                    {% endfor %}
+                    </ul>
+                </dd>
+                <dt>Jeton valide depuis</dt> <dd>{{ token_iat|date('d/m/Y \à H:i:s') }} <small>(heure serveur)</small></dd>
+                <dt>Jeton valide jusqu'à</dt> <dd>{{ token_exp|date('d/m/Y \à H:i:s') }} <small>(heure serveur)</small></dd>
+            </dl> 
+        </div>
+    </div>
+
+{% endblock %}

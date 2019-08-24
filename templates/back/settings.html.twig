@@ -1,0 +1,95 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Configuration" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-cogs text-gray-400"></i> Configuration</h1>
+    </div>
+
+    <hr>
+
+    <h2 class="h5 mb-0 text-gray-200 mb-3"><i class="fas fa-file-invoice"></i> Deviseur</h2>
+
+    <div class="row">
+        {# Deviseur - Durées d'engagements #}
+        <div class="col-lg-4 mb-3">
+            <a href="{{ path('deviseur.settings.dureeengagement') }}">
+                <div class="card border-left-light shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-gray-200">Gestion des durées d'engagement</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">pour chaque type de contrat</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-history fa-2x text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {# Deviseur - Remarques par défault #}
+        <div class="col-lg-4 mb-3">
+            <a href="{{ path('deviseur.settings.remarques') }}">
+                <div class="card border-left-light shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-gray-200">Gestion des remarques par défault</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">pour chaque type de contrat</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-comment-dots fa-2x text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {# Deviseur - Informations de service par défault #}
+        <div class="col-lg-4 mb-3">
+            <a href="{{ path('deviseur.settings.informations') }}">
+                <div class="card border-left-light shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-gray-200">Gestion des informations par défault</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">pour chaque type de contrat</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-info-circle fa-2x text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {# Deviseur - Conditions de paiement #}
+        <div class="col-lg-4 mb-3">
+            <a href="{{ path('deviseur.settings.paiement') }}">
+                <div class="card border-left-light shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-gray-200">Gestion des conditions de paiement</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">pour chaque type de contrat</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-euro-sign fa-2x text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}

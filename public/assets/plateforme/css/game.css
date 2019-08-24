@@ -1,0 +1,33 @@
+body {
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAH0lEQVQImWNgYGA4g4b/M2AROMOARQAu+B9d5X90IwAw1xVScR1jOgAAAABJRU5ErkJggg==);
+    background-repeat: repeat;
+}
+
+#content{height:100vh;}
+
+[data-draggable="target"]
+{
+    float:left;
+    list-style-type:none;
+    width:100%;
+    height:7.5em;
+    overflow-y:auto;
+    padding:0.5em;
+    border-radius:0.2em;
+    background:#222;
+    color:#555;
+}
+
+[data-draggable="item"]
+{
+    display:block;
+    list-style-type:none;
+    margin:0 0 2px 0;
+    padding:0.2em 0.4em;
+    border-radius:0.2em;
+    line-height:1.3;
+}
+
+#game_hand {height:250px;}
+#game_library {height:250px;}
+.carte {border-radius:15px;margin:5px;}
