@@ -5,10 +5,11 @@ namespace App\Entity\Agenda;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Agenda\EventsRepository")
+ * @ORM\Table(name="agenda_event")
+ * @ORM\Entity(repositoryClass="App\Repository\Agenda\EventRepository")
  */
-class Events
-{
+class Event {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,11 +23,6 @@ class Events
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $description;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $start;
@@ -35,11 +31,6 @@ class Events
      * @ORM\Column(type="datetime")
      */
     private $end;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $color;
 
     public function getId(): ?int
     {
@@ -54,18 +45,6 @@ class Events
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -94,15 +73,4 @@ class Events
         return $this;
     }
 
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
-    public function setColor(string $color): self
-    {
-        $this->color = $color;
-
-        return $this;
-    }
 }

@@ -7,6 +7,19 @@
     <link href='{{ asset('assets/fullcalendar/packages/daygrid/main.css') }}' rel='stylesheet' />
     <link href='{{ asset('assets/fullcalendar/packages/timegrid/main.css') }}' rel='stylesheet' />
     <link href='{{ asset('assets/fullcalendar/packages/list/main.css') }}' rel='stylesheet' />
+    <style>
+        #loading {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 10px;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -17,7 +30,9 @@
 
     <hr>
 
-    <div id="calendar"></div>
+    <div id='loading'>loading...</div>
+
+    <div id='calendar'></div>
 
 {% endblock %}
 
@@ -38,6 +53,17 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
+                defaultDate: '2019-08-12',
+                editable: true,
+                navLinks: true, // can click day/week names to navigate views
+                eventLimit: true, // allow "more" link when too many events
+                events: {
+                    url: "{{ path('agenda.events.load') }}",
+                },
+                loading: function(bool) {
+                    document.getElementById('loading').style.display =
+                        bool ? 'block' : 'none';
+                }
             });
 
             calendar.render();

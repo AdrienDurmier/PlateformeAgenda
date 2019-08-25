@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Agenda\Events;
+use App\Entity\Agenda\Event;
 
-class EventsController extends AbstractController
+class EventController extends AbstractController
 {
     /**
      * @Route("/admin/agenda/events/load", name="agenda.events.load")
@@ -18,18 +18,19 @@ class EventsController extends AbstractController
      */
     public function load(Request $request)
     {
-        $events = $this->getDoctrine()->getRepository(Events::class)->findAll();
-        $data = array();
-        foreach($events as $event)
-        {
-            $data[] = array(
-                'id'   => $event["id"],
-                'title'   => $event["title"],
-                'start'   => $event["start_event"],
-                'end'   => $event["end_event"]
-            );
+        $datas = $request->request->all();
+        $events = $this->getDoctrine()->getRepository(Event::class)->findAll();
+
+        $response = [];
+
+        foreach($events as $event){
+            $response[] = [
+                'id' => $event->getId(),
+                'title' => $event->getTitle(),
+                'start' => $event->getStart()->format('Y-m-d H:i:s'),
+            ];
         }
-        return new JsonResponse($data);
+        return new JsonResponse($response);
     }
 
     /**
@@ -42,7 +43,7 @@ class EventsController extends AbstractController
         $datas = $request->request->all();
         $em = $this->getDoctrine()->getManager();
 
-        $event = new Events();
+        $event = new Event();
         $event->setTitle(['title']);
         $event->setDescription(['description']);
         $event->setStart($datas['start']);
@@ -66,7 +67,7 @@ class EventsController extends AbstractController
         $id = $datas['Event'][0];
         $start = $datas['Event'][1];
         $end = $datas['Event'][2];
-        $event = $this->getDoctrine()->getRepository(Events::class)->find($id);
+        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
         $event->setStart($start);
         $event->setEnd($end);
 
@@ -74,5 +75,29 @@ class EventsController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('agenda.calendar.index');
+    }
+
+    // Date Utilities
+    //----------------------------------------------------------------------------------------------
+
+    // Parses a string into a DateTime object, optionally forced into the given timeZone.
+    function parseDateTime($string, $timeZone=null) {
+        $date = new DateTime(
+            $string,
+            $timeZone ? $timeZone : new DateTimeZone('UTC')
+        // Used only when the string is ambiguous.
+        // Ignored if string has a timeZone offset in it.
+        );
+        if ($timeZone) {
+            // If our timeZone was ignored above, force it.
+            $date->setTimezone($timeZone);
+        }
+        return $date;
+    }
+
+    // Takes the year/month/date values of the given DateTime and converts them to a new DateTime,
+    // but in UTC.
+    function stripTime($datetime) {
+        return new DateTime($datetime->format('Y-m-d'));
     }
 }
