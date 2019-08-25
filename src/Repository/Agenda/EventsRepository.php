@@ -2,7 +2,7 @@
 
 namespace App\Repository\Agenda;
 
-use App\Entity\Events;
+use App\Entity\Agenda\Events;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

@@ -26,31 +26,3 @@
 input[type='file'].form-control {padding:0;}
 
 /* Agenda */
-#calendar {
-    max-width: 1200px;
-}
-.nocheckbox {
-    display: none;
-}
-
-.label-on {
-    border-radius: 3px;
-    background: red;
-    color: #ffffff;
-    padding: 10px;
-    border: 1px solid red;
-    display: table-cell;
-}
-
-.label-off {
-    border-radius: 3px;
-    background: white;
-    border: 1px solid red;
-    padding: 10px;
-    display: table-cell;
-}
-
-#calendar a.fc-event {
-    color: #fff; /* bootstrap default styles make it black. undo */
-    background-color: #0065A6;
-}
