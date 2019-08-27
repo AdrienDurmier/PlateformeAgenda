@@ -37,18 +37,19 @@ class EventController extends AbstractController
      * @Route("/admin/agenda/events/add", name="agenda.events.add")
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function add(Request $request)
     {
         $datas = $request->request->all();
+        $start = new \DateTime($datas['start']);
+        $end = new \DateTime($datas['end']);
         $em = $this->getDoctrine()->getManager();
 
         $event = new Event();
-        $event->setTitle(['title']);
-        $event->setDescription(['description']);
-        $event->setStart($datas['start']);
-        $event->setEnd($datas['end']);
-        $event->setColor($datas['color']);
+        $event->setTitle($datas['title']);
+        $event->setStart($start);
+        $event->setEnd($end);
         $em->persist($event);
         $em->flush();
 

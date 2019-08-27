@@ -48,22 +48,57 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+                defaultView: 'timeGridWeek',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
-                defaultDate: '2019-08-12',
+                defaultDate: '{{ "now"|date("Y-m-d") }}',
                 editable: true,
-                navLinks: true, // can click day/week names to navigate views
-                eventLimit: true, // allow "more" link when too many events
                 events: {
                     url: "{{ path('agenda.events.load') }}",
                 },
                 loading: function(bool) {
                     document.getElementById('loading').style.display =
                         bool ? 'block' : 'none';
-                }
+                },
+                selectable:true,
+                selectHelper:true,
+                select: function(event) {
+                    var title = prompt("Intitulé de l'événement");
+                    if(title)
+                    {
+                        var start = event.startStr;
+                        var end = event.endStr;
+                        $.ajax({
+                            url:"{{ path('agenda.events.add') }}",
+                            type:"POST",
+                            data:{title:title, start:start, end:end},
+                            success:function()
+                            {
+                                calendar.fullCalendar('refetchEvents');
+                                alert("Added Successfully");
+                            }
+                        })
+                    }
+                },
+                eventResize:function(event)
+                {
+                    var start = event.startStr;
+                    var end = event.endStr;
+                    var title = event.title;
+                    var id = event.id;
+                    $.ajax({
+                        url:"{{ path('agenda.events.edit') }}",
+                        type:"POST",
+                        data:{title:title, start:start, end:end, id:id},
+                        success:function(){
+                            calendar.fullCalendar('refetchEvents');
+                            alert('Event Update');
+                        }
+                    })
+                },
             });
 
             calendar.render();
