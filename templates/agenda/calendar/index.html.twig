@@ -85,7 +85,6 @@
                 },
                 eventResize:function(info)
                 {
-                    //alert(info.event.title + " end is now " + info.event.end.toISOString());
                     let start = info.event.start.toISOString();
                     let end = info.event.end.toISOString();
                     let title = info.event.title;
@@ -94,6 +93,18 @@
                         url:"{{ path('agenda.events.resize') }}",
                         type:"POST",
                         data:{title:title, start:start, end:end, id:id},
+                        success:function(){
+                            calendar.refetchEvents();
+                        }
+                    })
+                },
+                eventClick:function(info)
+                {
+                    let id = info.event.id;
+                    $.ajax({
+                        url:"{{ path('agenda.events.delete') }}",
+                        type:"POST",
+                        data:{id:id},
                         success:function(){
                             calendar.refetchEvents();
                         }

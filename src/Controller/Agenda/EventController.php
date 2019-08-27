@@ -92,4 +92,28 @@ class EventController extends AbstractController
         return new JsonResponse($response);
     }
 
+    /**
+     * @Route("/admin/agenda/events/delete", name="agenda.events.delete")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function delete(Request $request)
+    {
+        $datas = $request->request->all();
+        $id = $datas['id'];
+
+        $em = $this->getDoctrine()->getManager();
+
+        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
+        $em->remove($event);
+        $em->flush();
+
+        $response = [
+            'event' => $event,
+        ];
+
+        return new JsonResponse($response);
+    }
+
 }
