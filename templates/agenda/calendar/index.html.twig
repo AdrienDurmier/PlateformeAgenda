@@ -97,12 +97,13 @@
                 eventDrop:function(info)
                 {
                     let start = info.event.start.toISOString();
+                    let end = info.event.end.toISOString();
                     let title = info.event.title;
                     let id = info.event.id;
                     $.ajax({
                         url:"{{ path('agenda.events.update') }}",
                         type:"POST",
-                        data:{title:title, start:start, id:id},
+                        data:{title:title, start:start, end:end, id:id},
                         success:function(){
                             calendar.refetchEvents();
                         }
