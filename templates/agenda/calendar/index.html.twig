@@ -57,16 +57,12 @@
                 },
                 defaultView: 'timeGridWeek',
                 defaultDate: '{{ "now"|date("Y-m-d") }}',
+                selectable:true,
+                selectHelper:true,
                 editable: true,
                 events: {
                     url: "{{ path('agenda.events.load') }}",
                 },
-                loading: function(bool) {
-                    document.getElementById('loading').style.display =
-                        bool ? 'block' : 'none';
-                },
-                selectable:true,
-                selectHelper:true,
                 select: function(event) {
                     let title = prompt("Intitulé de l'événement");
                     if(title)
