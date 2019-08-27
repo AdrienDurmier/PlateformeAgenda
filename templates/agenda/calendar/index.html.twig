@@ -34,6 +34,29 @@
 
     <div id='calendar'></div>
 
+    <div class="modal fade" id="ModalEvent" tabindex="-1" role="dialog" aria-labelledby="ModalEventLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="form-event" method="POST" action="#">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="title">Intitulé</label>
+                            <input type="text" class="form-control form-control-sm" id="title" name="title">
+                        </div>
+                        <input type="hidden" id="start" name="start" class="form-control">
+                        <input type="hidden" id="end" name="end" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-success"><i class="far fa-save"></i> Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -64,20 +87,11 @@
                     url: "{{ path('agenda.events.load') }}",
                 },
                 select: function(event) {
-                    let title = prompt("Intitulé de l'événement");
-                    if(title)
-                    {
-                        let start = event.startStr;
-                        let end = event.endStr;
-                        $.ajax({
-                            url:"{{ path('agenda.events.add') }}",
-                            type:"POST",
-                            data:{title:title, start:start, end:end},
-                            success:function() {
-                                calendar.refetchEvents();
-                            }
-                        })
-                    }
+                    let start = event.startStr;
+                    let end = event.endStr;
+                    $('#ModalEvent #start').val(start);
+                    $('#ModalEvent #end').val(end);
+                    $('#ModalEvent').modal('show');
                 },
                 eventResize:function(info)
                 {
@@ -122,8 +136,22 @@
                     })
                 }
             });
-
             calendar.render();
+
+            $("#form-event").submit(function(e) {
+                e.preventDefault();
+                let form = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('agenda.events.add') }}",
+                    data: form.serialize(),
+                    success: function(data)
+                    {
+                        calendar.refetchEvents();
+                        $('#ModalEvent').modal('hide');
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}
