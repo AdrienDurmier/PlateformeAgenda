@@ -34,10 +34,11 @@
 
     <div id='calendar'></div>
 
-    <div class="modal fade" id="ModalEvent" tabindex="-1" role="dialog" aria-labelledby="ModalEventLabel">
+    {# Fenêtre modale pour l'ajout #}
+    <div class="modal fade" id="ModalEventAdd" tabindex="-1" role="dialog" aria-labelledby="ModalEventAddLabel">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="form-event" method="POST" action="#">
+                <form id="form-event-add" method="POST" action="#">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
@@ -51,6 +52,36 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-sm btn-success"><i class="far fa-save"></i> Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# Fenêtre modale pour l'édition #}
+    <div class="modal fade" id="ModalEventEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEventEditLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="form-event-edit" method="POST" action="#">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="title">Intitulé</label>
+                            <input type="text" class="form-control form-control-sm" id="title" name="title">
+                        </div>
+                        <input type="hidden" id="event-edit-id" name="event-edit-id" class="form-control">
+                        <input type="hidden" id="event-edit-start" name="event-edit-start" class="form-control">
+                        <input type="hidden" id="event-edit-end" name="event-edit-end" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-danger" value="delete">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-success" value="save">
+                            <i class="far fa-save"></i> Enregistrer
+                        </button>
                     </div>
                 </form>
             </div>
@@ -89,9 +120,9 @@
                 select: function(event) {
                     let start = event.startStr;
                     let end = event.endStr;
-                    $('#ModalEvent #start').val(start);
-                    $('#ModalEvent #end').val(end);
-                    $('#ModalEvent').modal('show');
+                    $('#ModalEventAdd #start').val(start);
+                    $('#ModalEventAdd #end').val(end);
+                    $('#ModalEventAdd').modal('show');
                 },
                 eventResize:function(info)
                 {
@@ -126,31 +157,57 @@
                 eventClick:function(info)
                 {
                     let id = info.event.id;
-                    $.ajax({
-                        url:"{{ path('agenda.events.delete') }}",
-                        type:"POST",
-                        data:{id:id},
-                        success:function(){
-                            calendar.refetchEvents();
-                        }
-                    })
+                    let start = info.event.startStr;
+                    let end = info.event.endStr;
+                    $('#ModalEventEdit #event-edit-id').val(id);
+                    $('#ModalEventEdit #event-edit-start').val(start);
+                    $('#ModalEventEdit #event-edit-end').val(end);
+                    $('#ModalEventEdit').modal('show');
                 }
             });
             calendar.render();
 
-            $("#form-event").submit(function(e) {
+            $("#form-event-add").submit(function(e) {
                 e.preventDefault();
                 let form = $(this);
                 $.ajax({
                     type: "POST",
                     url: "{{ path('agenda.events.add') }}",
                     data: form.serialize(),
-                    success: function(data)
+                    success: function()
                     {
                         calendar.refetchEvents();
-                        $('#ModalEvent').modal('hide');
+                        $('#ModalEventAdd').modal('hide');
                     }
                 });
+            });
+
+            $("#form-event-edit").submit(function(e) {
+                e.preventDefault();
+                let method = document.activeElement.getAttribute('value');
+                let form = $(this);
+                if(method == 'delete'){
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('agenda.events.delete') }}",
+                        data: form.serialize(),
+                        success: function()
+                        {
+                            calendar.refetchEvents();
+                            $('#ModalEventEdit').modal('hide');
+                        }
+                    });
+                }else{
+                    $.ajax({
+                        url:"{{ path('agenda.events.update') }}",
+                        type:"POST",
+                        data:{id:id},
+                        success:function(){
+                            calendar.refetchEvents();
+                            $('#ModalEventEdit').modal('hide');
+                        }
+                    })
+                }
             });
         });
     </script>
