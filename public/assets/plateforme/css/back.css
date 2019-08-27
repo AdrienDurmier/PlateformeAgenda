@@ -26,3 +26,4 @@
 input[type='file'].form-control {padding:0;}
 
 /* Agenda */
+.fc-unthemed td.fc-today {background:#444 !important;}

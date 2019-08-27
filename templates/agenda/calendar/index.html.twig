@@ -90,9 +90,23 @@
                     let title = info.event.title;
                     let id = info.event.id;
                     $.ajax({
-                        url:"{{ path('agenda.events.resize') }}",
+                        url:"{{ path('agenda.events.update') }}",
                         type:"POST",
                         data:{title:title, start:start, end:end, id:id},
+                        success:function(){
+                            calendar.refetchEvents();
+                        }
+                    })
+                },
+                eventDrop:function(info)
+                {
+                    let start = info.event.start.toISOString();
+                    let title = info.event.title;
+                    let id = info.event.id;
+                    $.ajax({
+                        url:"{{ path('agenda.events.update') }}",
+                        type:"POST",
+                        data:{title:title, start:start, id:id},
                         success:function(){
                             calendar.refetchEvents();
                         }

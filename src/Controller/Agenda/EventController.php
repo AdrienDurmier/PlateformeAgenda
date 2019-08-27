@@ -63,25 +63,33 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/admin/agenda/events/resize", name="agenda.events.resize")
+     * @Route("/admin/agenda/events/update", name="agenda.events.update")
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function resize(Request $request)
+    public function update(Request $request)
     {
         $datas = $request->request->all();
         $id = $datas['id'];
-        $start = new \DateTime($datas['start']);
-        $start->setTimeZone(new \DateTimeZone('UTC'));
-        $end = new \DateTime($datas['end']);
-        $end->setTimeZone(new \DateTimeZone('UTC'));
+        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
+
+        if(isset($datas['title'])) {
+            $event->setTitle($datas['title']);
+        }
+        if(isset($datas['start'])) {
+            $start = new \DateTime($datas['start']);
+            $start->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setStart($start);
+        }
+        if(isset($datas['end'])){
+            $end = new \DateTime($datas['end']);
+            $end->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setEnd($end);
+        }
 
         $em = $this->getDoctrine()->getManager();
 
-        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
-        $event->setStart($start);
-        $event->setEnd($end);
         $em->persist($event);
         $em->flush();
 
