@@ -43,7 +43,9 @@ class EventController extends AbstractController
     {
         $datas = $request->request->all();
         $start = new \DateTime($datas['start']);
+        $start->setTimeZone(new \DateTimeZone('UTC'));
         $end = new \DateTime($datas['end']);
+        $end->setTimeZone(new \DateTimeZone('UTC'));
         $em = $this->getDoctrine()->getManager();
 
         $event = new Event();
@@ -53,52 +55,41 @@ class EventController extends AbstractController
         $em->persist($event);
         $em->flush();
 
-        return $this->redirectToRoute('agenda.calendar.index');
+        $response = [
+            'event' => $event,
+        ];
+
+        return new JsonResponse($response);
     }
 
     /**
-     * @Route("/admin/agenda/events/edit", name="agenda.events.edit")
+     * @Route("/admin/agenda/events/resize", name="agenda.events.resize")
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
-    public function edit(Request $request)
+    public function resize(Request $request)
     {
         $datas = $request->request->all();
+        $id = $datas['id'];
+        $start = new \DateTime($datas['start']);
+        $start->setTimeZone(new \DateTimeZone('UTC'));
+        $end = new \DateTime($datas['end']);
+        $end->setTimeZone(new \DateTimeZone('UTC'));
+
         $em = $this->getDoctrine()->getManager();
-        $id = $datas['Event'][0];
-        $start = $datas['Event'][1];
-        $end = $datas['Event'][2];
+
         $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
         $event->setStart($start);
         $event->setEnd($end);
-
         $em->persist($event);
         $em->flush();
 
-        return $this->redirectToRoute('agenda.calendar.index');
+        $response = [
+            'event' => $event,
+        ];
+
+        return new JsonResponse($response);
     }
 
-    // Date Utilities
-    //----------------------------------------------------------------------------------------------
-
-    // Parses a string into a DateTime object, optionally forced into the given timeZone.
-    function parseDateTime($string, $timeZone=null) {
-        $date = new DateTime(
-            $string,
-            $timeZone ? $timeZone : new DateTimeZone('UTC')
-        // Used only when the string is ambiguous.
-        // Ignored if string has a timeZone offset in it.
-        );
-        if ($timeZone) {
-            // If our timeZone was ignored above, force it.
-            $date->setTimezone($timeZone);
-        }
-        return $date;
-    }
-
-    // Takes the year/month/date values of the given DateTime and converts them to a new DateTime,
-    // but in UTC.
-    function stripTime($datetime) {
-        return new DateTime($datetime->format('Y-m-d'));
-    }
 }

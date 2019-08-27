@@ -18,4 +18,60 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
+
+    public function resizeEvent($idEvent, $startDate, $endDate)
+    {
+        return $this
+            ->createQueryBuilder('e')
+            ->update(Event::class, 'e')
+            ->set('e.start', '?1')
+            ->set('e.end', '?2')
+            ->where('e.id = ?3')
+            ->setParameter(1, $startDate)
+            ->setParameter(2, $endDate)
+            ->setParameter(3, $idEvent)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function dropEvent($idEvent, $startDate, $endDate)
+    {
+        return $this
+            ->createQueryBuilder('e')
+            ->update(Event::class, 'e')
+            ->set('e.startDate', '?1')
+            ->set('e.endDate', '?2')
+            ->where('e.id = ?3')
+            ->setParameter(1, $startDate)
+            ->setParameter(2, $endDate)
+            ->setParameter(3, $idEvent)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function editEvent($idEvent, $newTitle, $newComm)
+    {
+        return $this
+            ->createQueryBuilder('e')
+            ->update(Event::class, 'e')
+            ->set('e.title', '?1')
+            ->set('e.commentaire', '?2')
+            ->where('e.id = ?3')
+            ->setParameter(1, $newTitle)
+            ->setParameter(2, $newComm)
+            ->setParameter(3, $idEvent)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function deleteEvent($idEvent)
+    {
+        return $this
+            ->createQueryBuilder('e')
+            ->delete(Event::class, 'e')
+            ->where('e.id = ?1')
+            ->setParameter(1, $idEvent)
+            ->getQuery()
+            ->getResult();
+    }
 }
