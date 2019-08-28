@@ -158,8 +158,8 @@
                 {
                     let id = info.event.id;
                     let title = info.event.title;
-                    let start = info.event.startStr;
-                    let end = info.event.endStr;
+                    let start = info.event.start.toISOString();
+                    let end = info.event.end.toISOString();
                     $('#ModalEventEdit #event-edit-id').val(id);
                     $('#ModalEventEdit #event-edit-title').val(title);
                     $('#ModalEventEdit #event-edit-start').val(start);
