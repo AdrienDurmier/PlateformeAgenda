@@ -2,9 +2,10 @@
 
 namespace App\Repository\Agenda;
 
-use App\Entity\Agenda\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Entity\Agenda\Event;
+use App\Entity\User;
 
 /**
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,5 +18,36 @@ class EventRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
+    }
+
+    /**
+     * Recherche de définitions
+     * @param $filters
+     * @param User $user
+     * @return Event[] Returns an array of Event objects
+     */
+    public function search($filters, User $user)
+    {
+        $qb = $this->createQueryBuilder('e');
+		
+		$qb->andWhere(
+			$qb->expr()->like('e.users', ':user')
+		);
+		$qb->setParameter('user', '%' .  $user->getEmail() . '%');
+
+        // Filtre sur la date de début
+        if(isset($filters['date_debut']) && $filters['date_debut'] != ""){
+            $date_debut_heure_max = date('Y-m-d 00:00:00', strtotime($filters['date_debut']));
+            $qb->andWhere('e.start >= :date_debut')->setParameter('date_debut', $date_debut_heure_max);
+        }
+
+        // Filtre sur la date de fin
+        if(isset($filters['date_fin']) && $filters['date_fin'] != ""){
+            $date_fin_heure_max = date('Y-m-d 23:59:59', strtotime($filters['date_fin']));
+            $qb->andWhere('e.end <= :date_fin')->setParameter('date_fin', $date_fin_heure_max);
+        }
+
+
+        return $qb->getQuery()->getResult();
     }
 }

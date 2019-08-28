@@ -13,6 +13,18 @@
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-200"><i class="far fa-calendar-alt"></i><span> Calendrier</h1>
+        <div class="d-sm-inline-block">
+            <form action="#" method="post" class="d-inline-block">
+                <div class="input-group">
+                    <select class="form-control form-control-sm" name="user" onChange="submit()">
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.firstname }} {{ user.lastname|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+
+        </div>
     </div>
 
     <hr>
@@ -25,6 +37,7 @@
             <div class="modal-content">
                 <form id="form-event-add" method="POST" action="#" autocomplete="off">
                     <div class="modal-header">
+                        <div id="ModalEventAddTitle" class="h6 modal-title"></div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
@@ -34,6 +47,17 @@
                         </div>
                         <input type="hidden" id="start" name="start" class="form-control">
                         <input type="hidden" id="end" name="end" class="form-control">
+                        <div class="form-group">
+                            <label for="event-add-users">Collaborateurs concernés</label>
+                            {% for user in users %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ user.email }}" id="event-add-users-{{ user.id }}" name="event-add-users[]">
+                                    <label class="form-check-label" for="event-add-users-{{ user.id }}">
+                                        {{ user.firstname }} {{ user.lastname|upper }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-sm btn-success"><i class="far fa-save"></i> Enregistrer</button>
@@ -49,6 +73,7 @@
             <div class="modal-content">
                 <form id="form-event-edit" method="POST" action="#" autocomplete="off">
                     <div class="modal-header">
+                        <div id="ModalEventEditTitle" class="h6 modal-title"></div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
@@ -81,6 +106,8 @@
     <script src="{{ asset('assets/fullcalendar/packages/daygrid/main.js') }}"></script>
     <script src="{{ asset('assets/fullcalendar/packages/timegrid/main.js') }}"></script>
     <script src="{{ asset('assets/fullcalendar/packages/list/main.js') }}"></script>
+    <script src="{{ asset('assets/moment/moment.js') }}"></script>
+    <script src="{{ asset('assets/moment/moment-timezone.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let calendarEl = document.getElementById('calendar');
@@ -105,9 +132,12 @@
                 select: function(event) {
                     let start = event.startStr;
                     let end = event.endStr;
+                    let start_title = moment.tz(start, "Europe/Paris").format('D/MM/Y HH:mm:ss');
+                    let end_title = moment.tz(end, "Europe/Paris").format('D/MM/Y HH:mm:ss');
                     $('#ModalEventAdd #title').val('');
                     $('#ModalEventAdd #start').val(start);
                     $('#ModalEventAdd #end').val(end);
+                    $('#ModalEventAdd #ModalEventAddTitle').text(start_title + ' à ' + end_title);
                     $('#ModalEventAdd').modal('show');
                 },
                 eventResize:function(info)
@@ -146,10 +176,13 @@
                     let title = info.event.title;
                     let start = info.event.start.toISOString();
                     let end = info.event.end.toISOString();
+                    let start_title = moment.tz(start, "Europe/Paris").format('D/MM/Y HH:mm:ss');
+                    let end_title = moment.tz(end, "Europe/Paris").format('D/MM/Y HH:mm:ss');
                     $('#ModalEventEdit #event-edit-id').val(id);
                     $('#ModalEventEdit #event-edit-title').val(title);
                     $('#ModalEventEdit #event-edit-start').val(start);
                     $('#ModalEventEdit #event-edit-end').val(end);
+                    $('#ModalEventEdit #ModalEventEditTitle').text(start_title + ' à ' + end_title);
                     $('#ModalEventEdit').modal('show');
                 }
             });

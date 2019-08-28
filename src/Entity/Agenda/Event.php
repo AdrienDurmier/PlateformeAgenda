@@ -2,6 +2,7 @@
 
 namespace App\Entity\Agenda;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +32,19 @@ class Event {
      * @ORM\Column(type="datetime")
      */
     private $end;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $users = [];
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
 
     public function getId(): ?int
     {
@@ -71,6 +85,28 @@ class Event {
         $this->end = $end;
 
         return $this;
+    }
+
+    public function getUsers(): ?array
+    {
+        return $this->users;
+    }
+
+    public function setUsers(array $users): self
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): void
+    {
+        $this->author = $author;
     }
 
 }
