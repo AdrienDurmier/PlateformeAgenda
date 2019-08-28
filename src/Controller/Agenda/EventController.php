@@ -64,17 +64,17 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/admin/agenda/events/update", name="agenda.events.update")
+     * @Route("/admin/agenda/events/resize", name="agenda.events.resize")
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function update(Request $request)
+    public function resize(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $datas = $request->request->all();
         $id = $datas['id'];
         $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
-
         if(isset($datas['title'])) {
             $event->setTitle($datas['title']);
         }
@@ -88,16 +88,77 @@ class EventController extends AbstractController
             $end->setTimeZone(new \DateTimeZone('UTC'));
             $event->setEnd($end);
         }
-
-        $em = $this->getDoctrine()->getManager();
-
         $em->persist($event);
         $em->flush();
-
         $response = [
             'event' => $event,
         ];
+        return new JsonResponse($response);
+    }
 
+    /**
+     * @Route("/admin/agenda/events/drop", name="agenda.events.drop")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function drop(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $datas = $request->request->all();
+        $id = $datas['id'];
+        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
+        if(isset($datas['title'])) {
+            $event->setTitle($datas['title']);
+        }
+        if(isset($datas['start'])) {
+            $start = new \DateTime($datas['start']);
+            $start->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setStart($start);
+        }
+        if(isset($datas['end'])){
+            $end = new \DateTime($datas['end']);
+            $end->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setEnd($end);
+        }
+        $em->persist($event);
+        $em->flush();
+        $response = [
+            'event' => $event,
+        ];
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/admin/agenda/events/edit", name="agenda.events.edit")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function edit(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $datas = $request->request->all();
+        $id = $datas['event-edit-id'];
+        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
+        if(isset($datas['event-edit-title'])) {
+            $event->setTitle($datas['event-edit-title']);
+        }
+        if(isset($datas['event-edit-start'])) {
+            $start = new \DateTime($datas['event-edit-start']);
+            $start->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setStart($start);
+        }
+        if(isset($datas['event-edit-end'])){
+            $end = new \DateTime($datas['event-edit-end']);
+            $end->setTimeZone(new \DateTimeZone('UTC'));
+            $event->setEnd($end);
+        }
+        $em->persist($event);
+        $em->flush();
+        $response = [
+            'event' => $event,
+        ];
         return new JsonResponse($response);
     }
 
@@ -109,19 +170,15 @@ class EventController extends AbstractController
      */
     public function delete(Request $request)
     {
-        $datas = $request->request->all();
-        $id = $datas['id'];
-
         $em = $this->getDoctrine()->getManager();
-
+        $datas = $request->request->all();
+        $id = $datas['event-edit-id'];
         $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
         $em->remove($event);
         $em->flush();
-
         $response = [
             'event' => $event,
         ];
-
         return new JsonResponse($response);
     }
 

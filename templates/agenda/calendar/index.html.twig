@@ -38,7 +38,7 @@
     <div class="modal fade" id="ModalEventAdd" tabindex="-1" role="dialog" aria-labelledby="ModalEventAddLabel">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="form-event-add" method="POST" action="#">
+                <form id="form-event-add" method="POST" action="#" autocomplete="off">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
@@ -62,14 +62,14 @@
     <div class="modal fade" id="ModalEventEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEventEditLabel">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="form-event-edit" method="POST" action="#">
+                <form id="form-event-edit" method="POST" action="#" autocomplete="off">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="title">Intitulé</label>
-                            <input type="text" class="form-control form-control-sm" id="title" name="title">
+                            <label for="event-edit-title">Intitulé</label>
+                            <input type="text" class="form-control form-control-sm" id="event-edit-title" name="event-edit-title">
                         </div>
                         <input type="hidden" id="event-edit-id" name="event-edit-id" class="form-control">
                         <input type="hidden" id="event-edit-start" name="event-edit-start" class="form-control">
@@ -131,7 +131,7 @@
                     let title = info.event.title;
                     let id = info.event.id;
                     $.ajax({
-                        url:"{{ path('agenda.events.update') }}",
+                        url:"{{ path('agenda.events.resize') }}",
                         type:"POST",
                         data:{title:title, start:start, end:end, id:id},
                         success:function(){
@@ -146,7 +146,7 @@
                     let title = info.event.title;
                     let id = info.event.id;
                     $.ajax({
-                        url:"{{ path('agenda.events.update') }}",
+                        url:"{{ path('agenda.events.drop') }}",
                         type:"POST",
                         data:{title:title, start:start, end:end, id:id},
                         success:function(){
@@ -157,9 +157,11 @@
                 eventClick:function(info)
                 {
                     let id = info.event.id;
+                    let title = info.event.title;
                     let start = info.event.startStr;
                     let end = info.event.endStr;
                     $('#ModalEventEdit #event-edit-id').val(id);
+                    $('#ModalEventEdit #event-edit-title').val(title);
                     $('#ModalEventEdit #event-edit-start').val(start);
                     $('#ModalEventEdit #event-edit-end').val(end);
                     $('#ModalEventEdit').modal('show');
@@ -199,9 +201,9 @@
                     });
                 }else{
                     $.ajax({
-                        url:"{{ path('agenda.events.update') }}",
+                        url:"{{ path('agenda.events.edit') }}",
                         type:"POST",
-                        data:{id:id},
+                        data: form.serialize(),
                         success:function(){
                             calendar.refetchEvents();
                             $('#ModalEventEdit').modal('hide');
