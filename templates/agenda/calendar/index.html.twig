@@ -7,19 +7,6 @@
     <link href='{{ asset('assets/fullcalendar/packages/daygrid/main.css') }}' rel='stylesheet' />
     <link href='{{ asset('assets/fullcalendar/packages/timegrid/main.css') }}' rel='stylesheet' />
     <link href='{{ asset('assets/fullcalendar/packages/list/main.css') }}' rel='stylesheet' />
-    <style>
-        #loading {
-            display: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        #calendar {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 10px;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
@@ -29,8 +16,6 @@
     </div>
 
     <hr>
-
-    <div id='loading'>loading...</div>
 
     <div id='calendar'></div>
 
@@ -120,6 +105,7 @@
                 select: function(event) {
                     let start = event.startStr;
                     let end = event.endStr;
+                    $('#ModalEventAdd #title').val('');
                     $('#ModalEventAdd #start').val(start);
                     $('#ModalEventAdd #end').val(end);
                     $('#ModalEventAdd').modal('show');
