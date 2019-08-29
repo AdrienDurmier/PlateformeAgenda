@@ -23,17 +23,17 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Recherche de définitions
      * @param $filters
-     * @param User $user
+     * @param $username
      * @return Event[] Returns an array of Event objects
      */
-    public function search($filters, User $user)
+    public function search($filters, $username)
     {
         $qb = $this->createQueryBuilder('e');
 		
 		$qb->andWhere(
 			$qb->expr()->like('e.users', ':user')
 		);
-		$qb->setParameter('user', '%' .  $user->getEmail() . '%');
+		$qb->setParameter('user', '%' .  $username . '%');
 
         // Filtre sur la date de début
         if(isset($filters['date_debut']) && $filters['date_debut'] != ""){

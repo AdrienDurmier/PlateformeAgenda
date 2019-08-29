@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\APIUsers;
+use App\Entity\User;
 
 class CalendarController extends AbstractController
 {
@@ -26,8 +27,16 @@ class CalendarController extends AbstractController
             $users = $api_users_response->body;
         }
 
+        $user_selected = $this->getUser();
+        if ($request->isMethod('POST')) {
+            $datas = $request->request->all();
+            // Attention: reste limité au utilisateur connus de la plateforme et non de l'api (il faut que chaque utilisateur ce soit connecté par exemple pour créer un compte).
+            $user_selected = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($datas['user']);
+        }
+
         return $this->render('agenda/calendar/index.html.twig', [
             'users' => $users,
+            'user_selected' => $user_selected,
         ]);
     }
 }

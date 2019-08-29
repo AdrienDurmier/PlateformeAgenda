@@ -18,7 +18,7 @@
                 <div class="input-group">
                     <select class="form-control form-control-sm" name="user" onChange="submit()">
                         {% for user in users %}
-                            <option value="{{ user.id }}">{{ user.firstname }} {{ user.lastname|upper }}</option>
+                            <option value="{{ user.username }}" {% if user.username == user_selected.username %}selected="selected"{% endif %}>{{ user.firstname }} {{ user.lastname|upper }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -41,12 +41,20 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
+                        <input type="hidden" id="start" name="start" class="form-control">
+                        <input type="hidden" id="end" name="end" class="form-control">
                         <div class="form-group">
                             <label for="title">Intitulé</label>
                             <input type="text" class="form-control form-control-sm" id="title" name="title">
                         </div>
-                        <input type="hidden" id="start" name="start" class="form-control">
-                        <input type="hidden" id="end" name="end" class="form-control">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="event-add-all-day" name="event-add-all-day">
+                                <label class="form-check-label" for="event-add-all-day">
+                                    Cet événement dure toute la ou les journée(s)
+                                </label>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="event-add-users">Collaborateurs concernés</label>
                             {% for user in users %}
@@ -128,6 +136,9 @@
                 editable: true,
                 events: {
                     url: "{{ path('agenda.events.load') }}",
+                    extraParams: {
+                        username: '{{ user_selected.username }}'
+                    },
                 },
                 select: function(event) {
                     let start = event.startStr;

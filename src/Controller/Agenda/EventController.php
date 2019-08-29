@@ -18,13 +18,13 @@ class EventController extends AbstractController
      */
     public function load(Request $request)
     {
-        $datas = $request->request->all();
-		
+        $datas = $request->query->all();
+
         $filtres = [
-            'date_debut' => '2019-08-26 00:00:00',
-            'date_fin' => '2019-08-29 23:59:59'
+            //'date_debut' => '2019-08-26 00:00:00',
+            //'date_fin' => '2019-08-29 23:59:59'
         ];
-        $events = $this->getDoctrine()->getRepository(Event::class)->search($filtres, $this->getUser());
+        $events = $this->getDoctrine()->getRepository(Event::class)->search($filtres, $datas['username']);
 
         $response = [];
 
