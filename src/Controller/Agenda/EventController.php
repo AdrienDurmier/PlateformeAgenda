@@ -34,6 +34,7 @@ class EventController extends AbstractController
                 'title' => $event->getTitle(),
                 'start' => $event->getStart()->format('Y-m-d H:i:s'),
                 'end' => $event->getEnd()->format('Y-m-d H:i:s'),
+                'allDay' => $event->getAllDay(),
             ];
         }
         return new JsonResponse($response);
@@ -58,6 +59,7 @@ class EventController extends AbstractController
         $event->setTitle($datas['title']);
         $event->setStart($start);
         $event->setEnd($end);
+        $event->setAllDay($datas['allDay']);
         $event->setAuthor($this->getUser());
         $event->setUsers($datas['event-add-users']);
         $em->persist($event);

@@ -43,23 +43,16 @@
                     <div class="modal-body">
                         <input type="hidden" id="start" name="start" class="form-control">
                         <input type="hidden" id="end" name="end" class="form-control">
+                        <input type="hidden" id="allDay" name="allDay" class="form-control">
                         <div class="form-group">
                             <label for="title">Intitulé</label>
                             <input type="text" class="form-control form-control-sm" id="title" name="title">
                         </div>
                         <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="1" id="event-add-all-day" name="event-add-all-day">
-                                <label class="form-check-label" for="event-add-all-day">
-                                    Cet événement dure toute la ou les journée(s)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="event-add-users">Collaborateurs concernés</label>
                             {% for user in users %}
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ user.email }}" id="event-add-users-{{ user.id }}" name="event-add-users[]">
+                                    <input class="form-check-input" type="checkbox" value="{{ user.email }}" id="event-add-users-{{ user.id }}" name="event-add-users[]" {% if user.username == user_selected.username %}checked="checked"{% endif %}>
                                     <label class="form-check-label" for="event-add-users-{{ user.id }}">
                                         {{ user.firstname }} {{ user.lastname|upper }}
                                     </label>
@@ -143,12 +136,13 @@
                 select: function(event) {
                     let start = event.startStr;
                     let end = event.endStr;
-                    let start_title = moment.tz(start, "Europe/Paris").format('D/MM/Y HH:mm:ss');
-                    let end_title = moment.tz(end, "Europe/Paris").format('D/MM/Y HH:mm:ss');
+                    {# let start_title = moment.tz(start, "Europe/Paris").format('D/MM/Y HH:mm:ss'); #}
+                    {# let end_title = moment.tz(end, "Europe/Paris").format('D/MM/Y HH:mm:ss'); #}
                     $('#ModalEventAdd #title').val('');
                     $('#ModalEventAdd #start').val(start);
                     $('#ModalEventAdd #end').val(end);
-                    $('#ModalEventAdd #ModalEventAddTitle').text(start_title + ' à ' + end_title);
+                    $('#ModalEventAdd #allDay').val(event.allDay);
+                    {#$('#ModalEventAdd #ModalEventAddTitle').text(start_title + ' à ' + end_title);#}
                     $('#ModalEventAdd').modal('show');
                 },
                 eventResize:function(info)

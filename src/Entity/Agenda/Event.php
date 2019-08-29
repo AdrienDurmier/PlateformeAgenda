@@ -34,6 +34,11 @@ class Event {
     private $end;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $all_day;
+
+    /**
      * @ORM\Column(type="array")
      */
     private $users = [];
@@ -84,6 +89,17 @@ class Event {
     {
         $this->end = $end;
 
+        return $this;
+    }
+
+    public function getAllDay(): ?bool
+    {
+        return $this->all_day;
+    }
+
+    public function setAllDay(bool $all_day): self
+    {
+        $this->all_day = $all_day;
         return $this;
     }
 
