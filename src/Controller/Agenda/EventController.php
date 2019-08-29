@@ -25,7 +25,6 @@ class EventController extends AbstractController
             //'date_fin' => '2019-08-29 23:59:59'
         ];
         $events = $this->getDoctrine()->getRepository(Event::class)->search($filtres, $datas['username']);
-
         $response = [];
 
         foreach($events as $event){
@@ -59,9 +58,12 @@ class EventController extends AbstractController
         $event->setTitle($datas['title']);
         $event->setStart($start);
         $event->setEnd($end);
-        $event->setAllDay($datas['allDay']);
         $event->setAuthor($this->getUser());
         $event->setUsers($datas['event-add-users']);
+        $event->setAllDay(false);
+        if($datas['allDay'] == 'true'){
+            $event->setAllDay(true);
+        }
         $em->persist($event);
         $em->flush();
 
