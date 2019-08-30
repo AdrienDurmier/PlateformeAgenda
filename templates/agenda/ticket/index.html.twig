@@ -1,0 +1,89 @@
+{% extends 'back.html.twig' %}
+
+{% block title "Tickets" %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-exclamation-circle fa-fw text-gray-400"></i> Tickets</h1>
+        <div class="d-sm-inline-block">
+            <a href="{{ path('agenda.ticket.new') }}" class="d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Ouvrir un ticket
+            </a>
+        </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Tickets</li>
+        </ol>
+    </nav>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Titre</th>
+                        <th>Ouvert le</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in tickets %}
+                        <tr>
+                            <td>{{ ticket.id }}</td>
+                            <td>{{ ticket.title }}</td>
+                            <td>{{ ticket.created|date("d/m/Y \à h:i:s") }}</td>
+                            <td>
+                                <a href="{{ path('agenda.ticket.edit', {id : ticket.id}) }}" class="btn btn-sm btn-dark" title="Éditer le tutoriel">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a style="cursor:pointer;" data-ticket="{{ ticket.id }}" class="ticket-delete btn btn-sm btn-dark text-danger" title="Supprimer ce ticket">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+    <script>
+        // Suppression de ticket en live
+        $(".ticket-delete").on("click", function(){
+            var retour = confirm("Êtes-vous sûre ?");
+            if (retour == true) {
+                let ticket = $(this).data('ticket');
+                let current_row = $(this).closest('tr');
+                $.ajax({
+                    url:"{{ path('agenda.ticket.delete') }}",
+                    type:'post',
+                    data:{
+                        ticket:ticket
+                    },
+                    beforeSend: function () {
+                        $('#saving-area').fadeIn();
+                    },
+                    success: function (data) {
+                        current_row.remove()
+                    },
+                    complete: function () {
+                        $('#saving-area').fadeOut();
+                    },
+                })
+            }
+        });
+    </script>
+{% endblock %}

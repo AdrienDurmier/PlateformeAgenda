@@ -1,17 +1,17 @@
 {% extends 'back.html.twig' %}
 
-{% block title "Rédaction d'un tutoriel" %}
+{% block title "Ouvrir un ticket" %}
 
 {% block body %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-2">
-        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-question-circle fa-fw text-gray-400"></i> Rédaction d'un tutoriel</h1>
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-exclamation-circle fa-fw text-gray-400"></i> Ouvrir un ticket</h1>
     </div>
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('aide.tutorial.index') }}">Gestion des tutoriaux</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Rédaction d'un tutoriel</li>
+            <li class="breadcrumb-item"><a href="{{ path('aide.tutorial.index') }}">Tickets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ouvrir un ticket</li>
         </ol>
     </nav>
 
@@ -19,25 +19,20 @@
 
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="#" method="post" enctype="multipart/form-data">
+            <form id="form-ticket-new" action="#" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="title">Titre</label>
+                    <label for="title">Motif</label>
                     <input id="title" name="title" type="text" class="form-control form-control-sm" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="input-content">Contenu</label>
+                    <label for="input-content">Commentaire</label>
                     <textarea id="input-content" name="content" class="form-control form-control-sm" rows="3"></textarea>
                 </div>
 
                 <hr>
 
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <input id="public" name="public" type="checkbox" aria-label="Publier">&nbsp;Publier
-                        </span>
-                    </div>
                     <button class="btn btn-sm btn-success" type="submit">
                         <i class="far fa-save"></i>&nbsp;Enregistrer
                     </button>

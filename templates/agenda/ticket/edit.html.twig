@@ -1,0 +1,59 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Édition du ticket {{ ticket.id }}{% endblock %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-2">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-exclamation-circle fa-fw text-gray-400"></i> Édition du ticket {{ ticket.id }}</h1>
+
+        <div class="d-sm-inline-block">
+            <a href="{{ path('agenda.ticket.index') }}" class="btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-reply fa-sm text-white-50"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('agenda.ticket.index') }}">Tickets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Édition du ticket {{ ticket.id }}</li>
+        </ol>
+    </nav>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form id="form-ticket-edit" action="#" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Motif</label>
+                    <input id="title" name="title" type="text" class="form-control" value="{{ ticket.title }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-content">Commentaire</label>
+                    <textarea id="input-content" name="content" class="form-control" rows="3">{{ ticket.content }}</textarea>
+                </div>
+
+                <hr>
+
+                <div class="input-group">
+                    <button class="btn btn-sm btn-success" type="submit">
+                        <i class="far fa-save"></i>&nbsp;Enregistrer
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        CKEDITOR.replace('input-content', {
+            toolbar: [ ['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'Table', '-', 'Maximize'] ]
+        });
+    </script>
+{% endblock %}
