@@ -10,7 +10,7 @@ use App\Entity\User;
  * @ORM\Table(name="agenda_ticket_intervention")
  * @ORM\Entity(repositoryClass="App\Repository\Agenda\TicketInterventionRepository")
  */
-class TicketIntervention
+class TicketIntervention extends CalendarEvent
 {
     public function __construct() {
         $this->created = new \Datetime();
@@ -21,7 +21,7 @@ class TicketIntervention
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="text")
@@ -39,11 +39,6 @@ class TicketIntervention
      * @ORM\JoinColumn(nullable=false)
      */
     private $ticket;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getContent(): ?string
     {

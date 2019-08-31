@@ -33,6 +33,9 @@ class EventController extends AbstractController
                 'title' => $event->getTitle(),
                 'start' => $event->getStart()->format('Y-m-d H:i:s'),
                 'end' => $event->getEnd()->format('Y-m-d H:i:s'),
+                'backgroundColor' => $event->getBackgroundColor(),
+                'borderColor' => $event->getBorderColor(),
+                'textColor' => $event->getTextColor(),
                 'allDay' => $event->getAllDay(),
             ];
         }
@@ -59,8 +62,11 @@ class EventController extends AbstractController
         $event->setStart($start);
         $event->setEnd($end);
         $event->setAuthor($this->getUser());
-        $event->setUsers($datas['event-add-users']);
+        $event->setBackgroundColor('#375a7f');
+        $event->setBorderColor('#375a7f');
+        $event->setTextColor('#fff');
         $event->setAllDay(false);
+        $event->setUsers($datas['event-add-users']);
         if($datas['allDay'] == 'true'){
             $event->setAllDay(true);
         }
