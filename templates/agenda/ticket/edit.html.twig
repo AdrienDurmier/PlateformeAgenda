@@ -14,6 +14,7 @@
         </div>
     </div>
 
+    {# Fil d'Ariane #}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('agenda.ticket.index') }}">Tickets</a></li>
@@ -23,7 +24,11 @@
 
     <hr>
 
+    {# Ticket #}
     <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="h6 m-0 font-weight-bold text-light">Ticket</div>
+        </div>
         <div class="card-body">
             <form id="form-ticket-edit" action="#" method="post" enctype="multipart/form-data">
                 <div class="form-group">
@@ -36,6 +41,15 @@
                     <textarea id="input-content" name="content" class="form-control" rows="3">{{ ticket.content }}</textarea>
                 </div>
 
+                <div class="form-group">
+                    <label for="etat">État</label>
+                    <select class="form-control form-control-sm" id="etat" name="etat">
+                        {% for etat in etats %}
+                            <option value="{{ etat.id }}" {% if ticket.etat == etat %}selected="selected"{% endif %}>{{ etat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <hr>
 
                 <div class="input-group">
@@ -45,6 +59,38 @@
                 </div>
 
             </form>
+        </div>
+    </div>
+
+    {# Interventions #}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="h6 m-0 font-weight-bold text-light">Interventions</div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>todo</th>
+                        <th style="width:170px;">Action</th>
+                    </tr>
+                    </thead>
+                        {% for ligne in interventions %}
+                            <tr class="sortable-row" id="{{ ligne.id }}">
+                                <td>
+                                    todo
+                                </td>
+                                <td>
+                                    <a style="cursor:pointer;" data-ligne="{{ ligne.id }}" class="ligne-delete btn btn-sm btn-dark text-danger" title="Supprimer cette ligne" >
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

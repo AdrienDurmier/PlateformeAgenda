@@ -2,6 +2,7 @@
 
 namespace App\Entity\Agenda;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\User;
@@ -16,6 +17,7 @@ class Ticket
     public function __construct() {
         $this->created = new \Datetime();
         $this->updated = new \Datetime();
+        $this->interventions = new ArrayCollection();
     }
 
     public function __toString() {
@@ -51,12 +53,25 @@ class Ticket
     private $updated;
 
     /**
+     * @var TicketEtat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Agenda\TicketEtat")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etat;
+
+    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Agenda\TicketIntervention", mappedBy="ticket", cascade={"persist", "remove"})
+     */
+    private $interventions;
 
     public function getId(): ?int
     {
@@ -125,4 +140,30 @@ class Ticket
     {
         $this->author = $author;
     }
+
+    public function getEtat(): TicketEtat
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?TicketEtat $etat): void
+    {
+        $this->etat = $etat;
+    }
+
+    public function addIntervention(TicketIntervention $intervention)
+    {
+        $this->interventions[] = $intervention;
+    }
+
+    public function removeIntervention(TicketIntervention $intervention)
+    {
+        $this->interventions->removeElement($intervention);
+    }
+
+    public function getInterventions()
+    {
+        return $this->interventions;
+    }
+
 }

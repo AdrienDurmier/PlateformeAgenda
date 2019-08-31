@@ -29,6 +29,7 @@
                     <tr>
                         <th>#</th>
                         <th>Titre</th>
+                        <th>État</th>
                         <th>Ouvert le</th>
                         <th>Action</th>
                     </tr>
@@ -38,6 +39,7 @@
                         <tr>
                             <td>{{ ticket.id }}</td>
                             <td>{{ ticket.title }}</td>
+                            <td>{{ ticket.etat }}</td>
                             <td>{{ ticket.created|date("d/m/Y \à h:i:s") }}</td>
                             <td>
                                 <a href="{{ path('agenda.ticket.edit', {id : ticket.id}) }}" class="btn btn-sm btn-dark" title="Éditer le tutoriel">

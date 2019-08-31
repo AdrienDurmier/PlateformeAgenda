@@ -10,6 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TicketEtat
 {
+    public function __toString() {
+        return $this->label;
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

@@ -11,6 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Event {
 
+    public function __toString() {
+        return $this->title;
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

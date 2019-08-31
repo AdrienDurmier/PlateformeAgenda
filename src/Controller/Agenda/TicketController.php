@@ -2,6 +2,8 @@
 
 namespace App\Controller\Agenda;
 
+use App\Entity\Agenda\TicketEtat;
+use App\Entity\Agenda\TicketIntervention;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,21 +35,21 @@ class TicketController extends AbstractController
      */
     public function new(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         if ($request->isMethod('POST')) {
+            $em = $this->getDoctrine()->getManager();
             $datas = $request->request->all();
             $ticket = new Ticket();
             $ticket->setTitle($datas['title']);
             $ticket->setContent($datas['content']);
+            $ticket_etat = $this->getDoctrine()->getRepository(TicketEtat::class)->findOneByCode('a-planifier');
+            $ticket->setEtat($ticket_etat);
             $ticket->setAuthor($this->getUser());
             $em->persist($ticket);
             $em->flush();
             $this->addFlash('success', "Ticket créé avec succès");
             return $this->redirectToRoute('agenda.ticket.index');
         }
-        return $this->render('agenda/ticket/new.html.twig', [
-        ]);
+        return $this->render('agenda/ticket/new.html.twig');
     }
 
     /**
@@ -58,11 +60,15 @@ class TicketController extends AbstractController
      */
     public function edit(Ticket $ticket, Request $request)
     {
+        $etats = $this->getDoctrine()->getRepository(TicketEtat::class)->findAll();
+        $interventions = $this->getDoctrine()->getRepository(TicketIntervention::class)->findByTicket($ticket);
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
             $datas = $request->request->all();
             $ticket->setTitle($datas['title']);
             $ticket->setContent($datas['content']);
+            $ticket_etat = $this->getDoctrine()->getRepository(TicketEtat::class)->find($datas['etat']);
+            $ticket->setEtat($ticket_etat);
             $ticket->setAuthor($this->getUser());
             $em->persist($ticket);
             $em->flush();
@@ -70,7 +76,9 @@ class TicketController extends AbstractController
             return $this->redirectToRoute('agenda.ticket.index');
         }
         return $this->render('agenda/ticket/edit.html.twig', [
-            'ticket' => $ticket
+            'ticket' => $ticket,
+            'etats' => $etats,
+            'interventions' => $interventions,
         ]);
     }
 
