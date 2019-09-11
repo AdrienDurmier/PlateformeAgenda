@@ -46,10 +46,7 @@ class EventController extends AbstractController
         }
 
         // Jours fériés
-        $jours_feries_prev = $apiJoursFeries->interroger(date('Y') - 1);
         $jours_feries = $apiJoursFeries->interroger(date('Y'));
-        $jours_feries_next = $apiJoursFeries->interroger(date('Y') + 1);
-
         foreach($jours_feries as $jour_ferie){
             $response[] = [
                 'id' => null,
@@ -62,30 +59,7 @@ class EventController extends AbstractController
                 'allDay' => true,
             ];
         }
-        foreach($jours_feries_prev as $jour_ferie){
-            $response[] = [
-                'id' => null,
-                'title' => 'Férié: '.$jour_ferie->nom_jour_ferie,
-                'start' => $jour_ferie->date . ' 00:00:00',
-                'end' => $jour_ferie->date . ' 23:59:59',
-                'backgroundColor' => '#123456',
-                'borderColor' => '#123456',
-                'textColor' => '#ffffff',
-                'allDay' => true,
-            ];
-        }
-        foreach($jours_feries_next as $jour_ferie){
-            $response[] = [
-                'id' => null,
-                'title' => 'Férié: '.$jour_ferie->nom_jour_ferie,
-                'start' => $jour_ferie->date . ' 00:00:00',
-                'end' => $jour_ferie->date . ' 23:59:59',
-                'backgroundColor' => '#123456',
-                'borderColor' => '#123456',
-                'textColor' => '#ffffff',
-                'allDay' => true,
-            ];
-        }
+
         return new JsonResponse($response);
     }
 
