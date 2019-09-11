@@ -52,7 +52,7 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Recherche d'événements déjà existant dont seul la date de début est comprise pendant le nouvel évenement
+     * Recherche d'événements déjà existants dont seul la date de début est comprise pendant le nouvel évenement
      * @param $filters
      * @param $username
      * @return Event[] Returns an array of Event objects
@@ -75,7 +75,7 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Recherche d'événements déjà existant dont seul la date de fin est comprise pendant le nouvel évenement
+     * Recherche d'événements déjà existants dont la date de fin est comprise pendant le nouvel évenement
      * @param $filters
      * @param $username
      * @return Event[] Returns an array of Event objects
@@ -94,6 +94,54 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('start', date('Y-m-d H:i:s', strtotime($filters['date_debut'])))
             ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_fin'])))
         ;
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Recherche d'événements déjà existants dont la date de début et de fin englobe le nouvel évenement (cas où les événements sont éclatés)
+     * @param $filters
+     * @param $username
+     * @return Event[] Returns an array of Event objects
+     */
+    public function searchSuperposeOver($filters, $username)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+		$qb->andWhere(
+			$qb->expr()->like('e.users', ':user')
+		);
+		$qb->setParameter('user', '%' .  $username . '%');
+
+        $date_debut_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_debut']));
+        $qb->andWhere('e.start < :date_debut')->setParameter('date_debut', $date_debut_heure_max);
+
+        $date_fin_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_fin']));
+        $qb->andWhere('e.end > :date_fin')->setParameter('date_fin', $date_fin_heure_max);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Recherche d'événements déjà existant dont seul la date de fin est comprise pendant le nouvel évenement (cas où les événements sont remplacés)
+     * @param $filters
+     * @param $username
+     * @return Event[] Returns an array of Event objects
+     */
+    public function searchSuperposeErase($filters, $username)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+		$qb->andWhere(
+			$qb->expr()->like('e.users', ':user')
+		);
+		$qb->setParameter('user', '%' .  $username . '%');
+
+        $date_debut_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_debut']));
+        $qb->andWhere('e.start > :date_debut')->setParameter('date_debut', $date_debut_heure_max);
+
+        $date_fin_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_fin']));
+        $qb->andWhere('e.end < :date_fin')->setParameter('date_fin', $date_fin_heure_max);
+
         return $qb->getQuery()->getResult();
     }
 }
