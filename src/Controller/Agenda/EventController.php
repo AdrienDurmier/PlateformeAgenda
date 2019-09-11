@@ -8,15 +8,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Agenda\Event;
+use App\Service\APIJoursFeries;
 
 class EventController extends AbstractController
 {
     /**
      * @Route("/admin/agenda/events/load", name="agenda.events.load")
+     * @param APIJoursFeries $apiJoursFeries
      * @param Request $request
      * @return Response
      */
-    public function load(Request $request)
+    public function load(APIJoursFeries $apiJoursFeries, Request $request)
     {
         $datas = $request->query->all();
 
@@ -24,7 +26,10 @@ class EventController extends AbstractController
             //'date_debut' => '2019-08-26 00:00:00',
             //'date_fin' => '2019-08-29 23:59:59'
         ];
+
+        // Événements
         $events = $this->getDoctrine()->getRepository(Event::class)->search($filtres, $datas['username']);
+
         $response = [];
 
         foreach($events as $event){
@@ -37,6 +42,48 @@ class EventController extends AbstractController
                 'borderColor' => $event->getBorderColor(),
                 'textColor' => $event->getTextColor(),
                 'allDay' => $event->getAllDay(),
+            ];
+        }
+
+        // Jours fériés
+        $jours_feries_prev = $apiJoursFeries->interroger(date('Y') - 1);
+        $jours_feries = $apiJoursFeries->interroger(date('Y'));
+        $jours_feries_next = $apiJoursFeries->interroger(date('Y') + 1);
+
+        foreach($jours_feries as $jour_ferie){
+            $response[] = [
+                'id' => null,
+                'title' => 'Férié: '.$jour_ferie->nom_jour_ferie,
+                'start' => $jour_ferie->date . ' 00:00:00',
+                'end' => $jour_ferie->date . ' 23:59:59',
+                'backgroundColor' => '#123456',
+                'borderColor' => '#123456',
+                'textColor' => '#ffffff',
+                'allDay' => true,
+            ];
+        }
+        foreach($jours_feries_prev as $jour_ferie){
+            $response[] = [
+                'id' => null,
+                'title' => 'Férié: '.$jour_ferie->nom_jour_ferie,
+                'start' => $jour_ferie->date . ' 00:00:00',
+                'end' => $jour_ferie->date . ' 23:59:59',
+                'backgroundColor' => '#123456',
+                'borderColor' => '#123456',
+                'textColor' => '#ffffff',
+                'allDay' => true,
+            ];
+        }
+        foreach($jours_feries_next as $jour_ferie){
+            $response[] = [
+                'id' => null,
+                'title' => 'Férié: '.$jour_ferie->nom_jour_ferie,
+                'start' => $jour_ferie->date . ' 00:00:00',
+                'end' => $jour_ferie->date . ' 23:59:59',
+                'backgroundColor' => '#123456',
+                'borderColor' => '#123456',
+                'textColor' => '#ffffff',
+                'allDay' => true,
             ];
         }
         return new JsonResponse($response);
