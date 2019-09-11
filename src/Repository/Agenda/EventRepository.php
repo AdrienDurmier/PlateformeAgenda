@@ -90,8 +90,8 @@ class EventRepository extends ServiceEntityRepository
 		$qb->setParameter('user', '%' .  $username . '%');
 
         $qb
-            ->andWhere('e.start BETWEEN :start AND :end')
-            ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_debut'])))
+            ->andWhere('e.end BETWEEN :start AND :end')
+            ->setParameter('start', date('Y-m-d H:i:s', strtotime($filters['date_debut'])))
             ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_fin'])))
         ;
         return $qb->getQuery()->getResult();

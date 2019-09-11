@@ -82,6 +82,11 @@ class EventController extends AbstractController
                 $event_superpose_before->setStart($end);
                 $em->persist($event_superpose_before);
             }
+            $events_superpose_after = $this->getDoctrine()->getRepository(Event::class)->searchSuperposeAfter($filtres, $datas['event-add-users'][0]);
+            foreach ($events_superpose_after as $event_superpose_after){
+                $event_superpose_after->setEnd($start);
+                $em->persist($event_superpose_after);
+            }
         }
 
 
