@@ -14,7 +14,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-200"><i class="far fa-calendar-alt"></i><span> Calendrier</h1>
         <div class="d-sm-inline-block">
-            <form action="#" method="post" class="d-inline-block">
+            <a href="{{ path('agenda.events.ics') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-upload fa-sm text-white-50"></i> Export ICS
+            </a>
+            <form action="#" method="post" class="d-inline-block ml-3">
                 <div class="input-group">
                     <select class="form-control form-control-sm" name="user" onChange="submit()">
                         {% for user in users %}

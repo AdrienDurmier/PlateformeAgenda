@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sabre\VObject;
+use App\Entity\User;
 use App\Entity\Agenda\Event;
 use App\Service\APIJoursFeries;
 
@@ -61,6 +63,42 @@ class EventController extends AbstractController
         }
 
         return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/admin/agenda/events/ics", name="agenda.events.ics")
+     * @return Response
+     * @throws \Exception
+     */
+    public function ics()
+    {
+        // TODO A tester en production
+        $events = $this->getDoctrine()->getRepository(Event::class)->search(array(), $this->getUser()->getUsername());
+        $vcalendar = new VObject\Component\VCalendar();
+
+        // documentation: http://sabre.io/vobject/icalendar/
+        // documentation: https://fr.wikipedia.org/wiki/ICalendar#%C3%89v%C3%A9nements_(VEVENT)
+        foreach($events as $event) {
+            $vevent = $vcalendar->add('VEVENT', [
+                'SUMMARY' => $event->getTitle(),
+                'DTSTART' => $event->getStart(),
+                'DTEND' => $event->getEnd(),
+            ]);
+            foreach ($event->getUsers() as $username){
+                $user = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($username);
+                $vevent->add('ATTENDEE', 'mailto:'.$user->getEmail());
+            }
+        }
+
+        $filename = 'agenda-'.strtolower($this->getUser()->getFirstname()).'-'.strtolower($this->getUser()->getLastname()).'-'.date('YmdHis');
+        header('Content-Type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename="'.$filename.'.ics"');
+        return new Response($vcalendar->serialize());
+        /*$response = $vcalendar->serialize();
+
+        return $this->render('agenda/calendar/synchronize.html.ics', [
+            'calendar' => $response,
+        ]);*/
     }
 
     /**
