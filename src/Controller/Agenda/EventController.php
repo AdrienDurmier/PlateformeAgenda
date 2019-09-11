@@ -70,6 +70,21 @@ class EventController extends AbstractController
         if($datas['allDay'] == 'true'){
             $event->setAllDay(true);
         }
+        // Si l'événement n'est pas superposable
+        if(!isset($datas['form-event-add-distinct'])){
+            // Recherche d'événements déjà existant à cette période
+            $filtres = [
+                'date_debut' => $event->getStart()->format('Y-m-d H:i:s'),
+                'date_fin' => $event->getEnd()->format('Y-m-d H:i:s')
+            ];
+            $events_superpose_before = $this->getDoctrine()->getRepository(Event::class)->searchSuperposeBefore($filtres, $datas['event-add-users'][0]);
+            foreach ($events_superpose_before as $event_superpose_before){
+                $event_superpose_before->setStart($end);
+                $em->persist($event_superpose_before);
+            }
+        }
+
+
         $em->persist($event);
         $em->flush();
 

@@ -21,7 +21,7 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Recherche de définitions
+     * Recherche d'événements
      * @param $filters
      * @param $username
      * @return Event[] Returns an array of Event objects
@@ -37,17 +37,63 @@ class EventRepository extends ServiceEntityRepository
 
         // Filtre sur la date de début
         if(isset($filters['date_debut']) && $filters['date_debut'] != ""){
-            $date_debut_heure_max = date('Y-m-d 00:00:00', strtotime($filters['date_debut']));
+            $date_debut_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_debut']));
             $qb->andWhere('e.start >= :date_debut')->setParameter('date_debut', $date_debut_heure_max);
         }
 
         // Filtre sur la date de fin
         if(isset($filters['date_fin']) && $filters['date_fin'] != ""){
-            $date_fin_heure_max = date('Y-m-d 23:59:59', strtotime($filters['date_fin']));
+            $date_fin_heure_max = date('Y-m-d H:i:s', strtotime($filters['date_fin']));
             $qb->andWhere('e.end <= :date_fin')->setParameter('date_fin', $date_fin_heure_max);
         }
 
 
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Recherche d'événements déjà existant dont seul la date de début est comprise pendant le nouvel évenement
+     * @param $filters
+     * @param $username
+     * @return Event[] Returns an array of Event objects
+     */
+    public function searchSuperposeBefore($filters, $username)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+		$qb->andWhere(
+			$qb->expr()->like('e.users', ':user')
+		);
+		$qb->setParameter('user', '%' .  $username . '%');
+
+        $qb
+            ->andWhere('e.start BETWEEN :start AND :end')
+            ->setParameter('start', date('Y-m-d H:i:s', strtotime($filters['date_debut'])))
+            ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_fin'])))
+        ;
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Recherche d'événements déjà existant dont seul la date de fin est comprise pendant le nouvel évenement
+     * @param $filters
+     * @param $username
+     * @return Event[] Returns an array of Event objects
+     */
+    public function searchSuperposeAfter($filters, $username)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+		$qb->andWhere(
+			$qb->expr()->like('e.users', ':user')
+		);
+		$qb->setParameter('user', '%' .  $username . '%');
+
+        $qb
+            ->andWhere('e.start BETWEEN :start AND :end')
+            ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_debut'])))
+            ->setParameter('end', date('Y-m-d H:i:s', strtotime($filters['date_fin'])))
+        ;
         return $qb->getQuery()->getResult();
     }
 }

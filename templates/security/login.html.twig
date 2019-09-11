@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     <style>
-        #logo_login {background-image:url('/images/logo.png');background-size:cover;background-repeat:no-repeat;height:192px;width:600px;position:absolute;top:0;bottom:0;right:0;left:0;margin:auto;}
+        #logo_login {background-image:url('/images/logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;height:192px;width:600px;position:absolute;top:0;bottom:0;right:0;left:0;margin:auto;}
     </style>
 {% endblock %}
 
@@ -53,13 +53,16 @@
                         </form>
                         <hr>
                         <p>
-                            <span class="small text-muted">© Adrien Durmier 2019.</span>
+                            <span class="small text-muted">© 2019 - <a href="https://www.amediasolutions.fr/" target="_blank" class="text-muted">Amedia Solutions</a>.</span>
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-9 col-md-7 col-sm-6 col-xs-12 d-none d-sm-block">
+            <div class="col-lg-9 col-md-7 col-sm-6 col-xs-12 d-none d-sm-block" style="background-color:rgba(255,255,255,0.6);">
+                <a href="https://www.amediasolutions.fr/" target="_blank" class="text-muted">
+                    <div id="logo_login"></div>
+                </a>
             </div>
 
         </div>
